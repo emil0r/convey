@@ -23,5 +23,5 @@
   #?(:cljs (set! (.-value (first args)) (second args))))
 (defmethod action! :dom/focus-element [_ args _ _]
   #?(:cljs (.focus (first args))))
-(defmethod action! :default [action-name action-args _ _ ]
-  (console :info "Convey: Unknown action" action-name action-args))
+(defmethod action! :default [action-name _ _ _ ]
+  (console :info "Convey: Unknown action" (pr-str action-name)))

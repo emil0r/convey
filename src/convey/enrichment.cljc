@@ -78,11 +78,15 @@
                   (map? next-node)
                   (skip-loc next-loc)
 
+                  #?(:clj  (satisfies? clojure.lang.IDeref next-node)
+                     :cljs (satisfies? cljs.core.IDeref next-node))
+                  (skip-loc next-loc)
+
                   :else
                   (recur next-loc))))))
     (catch #?(:cljs js/Error :clj Exception e) e
       (console :error e)
       nil)))
 
-(defn protect-actions-from-enrichment [actions]
+(defn protect [actions]
   [:convey/protected actions])

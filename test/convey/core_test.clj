@@ -26,7 +26,7 @@
   (let [db (atom {})]
     (t/testing "init of convey"
       (t/is (nil? sut/dispatcher))
-      (sut/init db render {})
+      (sut/init db {} render {})
 
       (t/is (some? sut/dispatcher))
 
