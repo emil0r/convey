@@ -2,7 +2,7 @@
   (:require
     [clojure.tools.build.api :as b]))
 
-(def version "2024.11.15")
+(def version "2024.11.25-SNAPSHOT")
 (def target "target")
 (def classes (str target "/classes"))
 (def lib 'org.clojars.emil0r/convey)
