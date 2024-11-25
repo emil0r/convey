@@ -101,6 +101,7 @@
 
   (push [this event]         ;; presumably called by dispatch
     (-fsm-trigger this :add-event event))
+
   (flush! [this]
     (doseq [_ (range (count queue))]
       (-process-1st-event-in-queue this)))

@@ -3,3 +3,4 @@ pom.xml.asc
 *.jar
 *.class
 cljs-test-runner-out/
+target/
