@@ -1,5 +1,6 @@
 (ns convey.core
-  (:require [convey.action]
+  (:require #?(:cjls [clojure.walk :as walk])
+            [convey.action]
             [convey.logger :refer [console]]
             [convey.enrichment :refer [enrich-actions]]
             [convey.router :as router]))

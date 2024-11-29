@@ -12,17 +12,6 @@
          :extra-paths ["test"]
          :main-opts   ["-m" "cljs-test-runner.main"]}
 
-  :deploy {:extra-deps {slipset/deps-deploy {:mvn/version "RELEASE"}}
-           :exec-fn    deps-deploy.deps-deploy/deploy
-           :exec-args  {:installer      :local
-                        :sign-releases? true
-                        :sign-key-id    "42B45893BEB4D6A69349F2B5F68F84588F9D3FEC"
-                        :artifact       "target/convey.jar"}}
-
-  :install {:extra-deps {slipset/deps-deploy {:mvn/version "RELEASE"}}
-            :exec-fn    deps-deploy.deps-deploy/deploy
-            :exec-args  {:installer :local
-                         :artifact  "target/convey.jar"}}
-
-  :build {:deps       {io.github.clojure/tools.build {:mvn/version "0.10.6"}}
+  :build {:extra-deps {slipset/deps-deploy {:mvn/version "RELEASE"}
+                       io.github.clojure/tools.build {:mvn/version "0.10.6"}}
           :ns-default build}}}

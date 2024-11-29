@@ -1,10 +1,11 @@
 (ns build
   (:require
-    [clojure.tools.build.api :as b]))
+    [clojure.tools.build.api :as b]
+    [deps-deploy.deps-deploy :as d]))
 
-(def version "2024.11.25-SNAPSHOT")
+(def version "2024.11.25")
 (def target "target")
-(def classes (str target "/classes"))
+(def class-dir (str target "/class-dir"))
 (def lib 'org.clojars.emil0r/convey)
 (def jar-file (format "target/%s.jar" (name lib)))
 
@@ -14,8 +15,8 @@
         src-dirs (:paths basis)]
     (assoc opts
            :basis basis
-           :target-dir classes
-           :class-dir classes
+           :target-dir class-dir
+           :class-dir class-dir
            :lib lib
            :version version
            :src-dirs src-dirs
@@ -36,3 +37,22 @@
     (b/copy-dir opts)
     (println (format "Writing jar file %s with contents from %s" (:jar-file opts) (:class-dir opts)))
     (b/jar opts)))
+
+
+(defn install [_]
+  (clean nil)
+  (jar nil)
+  (d/deploy {:installer :local
+             :artifact jar-file
+             :pom-file (b/pom-path {:lib lib :class-dir class-dir})}))
+
+(defn deploy
+  [_]
+  (clean nil)
+  (jar nil)
+  (d/deploy {:installer :remote
+             :artifact jar-file
+             :pom-file (b/pom-path {:lib lib :class-dir class-dir})
+             :sign-releases? true
+             :sign-key-id (or (System/getenv "CLOJARS_GPG_ID")
+                              (throw (RuntimeException. "CLOJARS_GPG_ID environment variable not set")))}))

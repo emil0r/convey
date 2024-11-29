@@ -1,3 +1,46 @@
 = Clojure library for event routing intended for replicant
 
 WARNING: This is an experimental library.
+
+== Use
+
+Dep
+
+```clojure
+[org.clojars.emil0r/convey "2024.11.25"]
+```
+
+```clojure
+org.clojars.emil0r/convey {:mvn/version "2024.11.25"}
+```
+
+
+== Example usage
+
+```clojure
+(ns my-ns
+  (:require [convey.core :as convey]
+            [replicant.dom]))
+
+(defonce db (atom {})
+
+(convey/action! :update-name [_ [value] db _]
+  (swap! db assoc :name value))
+
+(defn greeting [name]
+  (str "Hello, " name))
+
+(defn input [value]
+  [:input {:value value
+           :type :text
+           :on {:change [[:update-name :event.target/value]]}}])
+
+(defn render [state]
+  [:div
+    (greeting (:name state))
+    (input (:name state))])
+
+(defn start []
+  (convey/init db {} render [])
+  (render @db))
+```
