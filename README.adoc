@@ -20,7 +20,7 @@ org.clojars.emil0r/convey {:mvn/version "2024.11.25"}
 ```clojure
 (ns my-ns
   (:require [convey.core :as convey]
-            [replicant.dom]))
+            [replicant.dom :as dom]))
 
 (defonce db (atom {})
 
@@ -28,17 +28,22 @@ org.clojars.emil0r/convey {:mvn/version "2024.11.25"}
   (swap! db assoc :name value))
 
 (defn greeting [name]
-  (str "Hello, " name))
+  [:div (str "Hello, " name)])
 
 (defn input [value]
-  [:input {:value value
-           :type :text
-           :on {:change [[:update-name :event.target/value]]}}])
+  [:div
+    [:input {:value value
+             :type :text
+             :on {:change [[:update-name :event.target/value]]}}]])
+
+(def el (js/document.getElementById "app"))
 
 (defn render [state]
-  [:div
-    (greeting (:name state))
-    (input (:name state))])
+  (dom/render
+    el
+    [:div
+      (greeting (:name state))
+      (input (:name state))]))
 
 (defn start []
   (convey/init db {} render [])
