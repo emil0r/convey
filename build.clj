@@ -20,7 +20,12 @@
            :lib lib
            :version version
            :src-dirs src-dirs
-           :jar-file jar-file)))
+           :jar-file jar-file
+           :pom-data [[:licenses
+                       [:license
+                        [:name "Eclipse Public License 1.0"]
+                        [:url "https://opensource.org/license/epl-1-0/"]
+                        [:distribution "repo"]]]])))
 
 (defn clean
   [_]
