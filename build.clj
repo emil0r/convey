@@ -3,7 +3,7 @@
     [clojure.tools.build.api :as b]
     [deps-deploy.deps-deploy :as d]))
 
-(def version "2024.11.25")
+(def version "2025.01.14")
 (def target "target")
 (def class-dir (str target "/class-dir"))
 (def lib 'org.clojars.emil0r/convey)
