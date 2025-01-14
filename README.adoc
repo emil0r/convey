@@ -19,13 +19,15 @@ org.clojars.emil0r/convey {:mvn/version "2024.11.25"}
 
 ```clojure
 (ns my-ns
-  (:require [convey.core :as convey]
+  (:require [convey.core :as cv]
             [replicant.dom :as dom]))
 
 (defonce db (atom {})
 
-(convey/action! :update-name [_ [value] db _]
-  (swap! db assoc :name value))
+(cv/reg-action
+  :update-name
+  (fn [_ [value] db _]
+    (swap! db assoc :name value)))
 
 (defn greeting [name]
   [:div (str "Hello, " name)])
@@ -46,6 +48,6 @@ org.clojars.emil0r/convey {:mvn/version "2024.11.25"}
       (input (:name state))]))
 
 (defn start []
-  (convey/init db {} render [])
+  (cv/init db {} render [])
   (render @db))
 ```
