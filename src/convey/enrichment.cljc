@@ -57,17 +57,33 @@
         :else
         (zip/root next-loc)))
 
+(defn mapentry? [x]
+  (= (type x)
+     #?(:cljs cljs.core.MapEntry
+        :clj  clojure.lang.MapEntry)))
+
 (defn enrich-actions [ctx enrichments actions]
   (try
     (loop [loc (zipper actions)]
       (let [next-loc (zip/next loc)]
         (if (zip/end? next-loc)
           (zip/root loc)
-          (let [next-node (zip/node next-loc)]
-            (cond (vector? next-node)
+          (let [next-node (zip/node next-loc)
+                meta-next-node (meta next-node)]
+            (cond (nil? next-node)
                   (recur next-loc)
 
-                  (= :oiiku/protected next-node)
+                  (and (vector? next-node)
+                       (not (mapentry? next-node)))
+                  (recur next-loc)
+
+                  (:process meta-next-node)
+                  (recur next-loc)
+
+                  (:skip meta-next-node)
+                  (skip-loc next-loc)
+
+                  (= :convey/protected next-node)
                   (recur (enrich-protected ctx next-node next-loc))
 
                   (keyword? next-node)
@@ -78,13 +94,13 @@
                   (map? next-node)
                   (skip-loc next-loc)
 
-                  #?(:clj  (satisfies? clojure.lang.IDeref next-node)
+                  #?(:clj  (instance? clojure.lang.IDeref next-node)
                      :cljs (satisfies? cljs.core.IDeref next-node))
                   (skip-loc next-loc)
 
                   :else
                   (recur next-loc))))))
-    (catch #?(:cljs js/Error :clj Exception e) e
+    (catch #?(:cljs js/Error :clj Exception) e
       (console :error e)
       nil)))
 
