@@ -1,17 +1,18 @@
 = Clojure library for event routing intended for replicant
 
-WARNING: This is an experimental library.
-
 == Use
+
+image::https://img.shields.io/clojars/v/org.clojars.emil0r/convey.svg[Latest version]
+
 
 Dep
 
 ```clojure
-[org.clojars.emil0r/convey "2024.11.25"]
+[org.clojars.emil0r/convey "2025.01.14"]
 ```
 
 ```clojure
-org.clojars.emil0r/convey {:mvn/version "2024.11.25"}
+org.clojars.emil0r/convey {:mvn/version "2025.01.14"}
 ```
 
 
