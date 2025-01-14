@@ -1,15 +1,17 @@
 (ns convey.core
-  (:require #?(:cjls [clojure.walk :as walk])
+  (:require #?(:cljs [clojure.walk :as walk])
             [convey.action]
             [convey.logger :refer [console]]
             [convey.enrichment :refer [enrich-actions]]
             [convey.router :as router]))
 
+(def reg-action convey.action/reg-action)
+(def protect convey.enrichment/protect)
 
-(def action! convey.action/action!)
-
-(defmethod action! ::render [_ render-fn state* _]
-  (render-fn @state*))
+(convey.action/reg-action
+ ::render
+ (fn [_ render-fn state* _]
+   (render-fn @state*)))
 
 (defn sync? [actions]
   (true? (:sync (meta actions))))
@@ -30,8 +32,10 @@
             ;; (console :debug "Enriched action" action-name)
             (if (or (sync? action)
                     (sync? actions))
-              (action! action-name args db replicant-data)
-              (router/push event-queue [action-name args db replicant-data])))))
+              (if-let [action-fn (get @convey.action/actions action-name)]
+                (action-fn action-name args db (merge replicant-data ctx))
+                (console :warn "Convey: Unknown action" (pr-str action-name)))
+              (router/push event-queue [action-name args db (merge replicant-data ctx)])))))
       (when render
         (router/push event-queue [::render render (delay (prepare-state @db ctx))])))))
 

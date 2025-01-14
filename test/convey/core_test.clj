@@ -13,8 +13,10 @@
     (reset! catch {})
     (f)))
 
-(defmethod sut/action! ::test [_ args db _]
-  (swap! db assoc ::test args))
+(sut/reg-action
+ ::test
+ (fn [_ args db _]
+   (swap! db assoc ::test args)))
 
 
 (defn render [state]

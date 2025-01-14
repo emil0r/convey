@@ -1,9 +1,8 @@
-(ns convey.action
-  (:require [convey.logger :refer [console]]))
+(ns convey.action)
 
 
-(defmulti action! (fn [action-name _action-args _db _ctx]
-                    action-name))
+(defonce actions (atom {}))
 
-(defmethod action! :default [action-name _ _ _ ]
-  (console :info "Convey: Unknown action" (pr-str action-name)))
+(defn reg-action [action-name action-fn]
+  (swap! actions assoc action-name action-fn)
+  nil)

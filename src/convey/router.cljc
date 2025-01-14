@@ -1,5 +1,5 @@
 (ns convey.router
-  (:require [convey.action :refer [action!]]
+  (:require [convey.action :refer [actions]]
             [convey.interop :refer [empty-queue next-tick]]
             [convey.logger :refer [console]]))
 
@@ -177,8 +177,10 @@
     [this]
     (let [[action-name action-args db replicant-data :as event-v] (peek queue)]
       (try
-        (console :debug ::event-v event-v)
-        (action! action-name action-args db replicant-data)
+        ;; (console :debug ::event-v event-v)
+        (if-let [action-fn (get @actions action-name)]
+          (action-fn action-name action-args db replicant-data)
+          (console :warn "Convey: Unknown action" (pr-str action-name)))
         (set! queue (pop queue))
         (-call-post-event-callbacks this event-v)
         (catch #?(:cljs :default :clj Exception) ex
