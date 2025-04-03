@@ -40,7 +40,8 @@
         (router/push event-queue [::render render (delay (prepare-state @db ctx))])))))
 
 (defn dispatch [replicant-data actions]
-  (dispatcher replicant-data actions))
+  (dispatcher replicant-data actions)
+  nil)
 
 #?(:cljs
    (defn dispatch-js [replicant-data actions]
