@@ -12,6 +12,6 @@
          :extra-paths ["test"]
          :main-opts   ["-m" "cljs-test-runner.main"]}
 
-  :build {:extra-deps {slipset/deps-deploy {:mvn/version "RELEASE"}
+  :build {:extra-deps {slipset/deps-deploy {:mvn/version "0.2.2"}
                        io.github.clojure/tools.build {:mvn/version "0.10.6"}}
           :ns-default build}}}
