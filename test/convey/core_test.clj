@@ -28,14 +28,18 @@
   (let [db (atom {})]
     (t/testing "init of convey"
       (t/is (nil? sut/dispatcher))
-      (sut/init db {} render {})
+      (sut/init {} db {} render {})
 
       (t/is (some? sut/dispatcher))
 
       (sut/dispatch {} [[::test :my :args]])
-      (Thread/sleep 500)
+      (Thread/sleep 150)
 
       (t/is (= (::test @db)
                [:my :args]))
       (t/is (= @catch
-               [:my :args])))))
+               [:my :args]))
+
+      (sut/dispatch {} ^:sync [[::test :my :args :more]])
+      (t/is (= (::test @db)
+               [:my :args :more])))))

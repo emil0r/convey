@@ -21,7 +21,7 @@
 
 (defonce dispatcher nil)
 
-(defn init-event-handler [db ctx render enrichments event-queue]
+(defn init-event-handler [opts db ctx render enrichments event-queue]
   (let [prepare-state (ctx :prepare-state prepare-state-default)]
     (fn [replicant-data actions & [flush?]]
       (if flush?
@@ -31,7 +31,8 @@
                 [action-name & args] (enrich-actions action-ctx enrichments action)]
             ;; (console :debug "Enriched action" action-name)
             (if (or (sync? action)
-                    (sync? actions))
+                    (sync? actions)
+                    (:all-sync? opts))
               (if-let [action-fn (get @convey.action/actions action-name)]
                 (action-fn action-name args db (merge replicant-data ctx))
                 (console :warn "Convey: Unknown action" (pr-str action-name)))
@@ -50,8 +51,8 @@
 (defn flush! []
   (dispatcher nil nil true))
 
-(defn init [db ctx render-fn enrichments]
-  #?(:cljs (let [f (init-event-handler db ctx render-fn enrichments (router/get-event-queue))]
+(defn init [opts db ctx render-fn enrichments]
+  #?(:cljs (let [f (init-event-handler opts db ctx render-fn enrichments (router/get-event-queue))]
              (set! dispatcher f))
-     :clj  (let [f (init-event-handler db ctx render-fn enrichments (router/get-event-queue))]
+     :clj  (let [f (init-event-handler opts db ctx render-fn enrichments (router/get-event-queue))]
              (alter-var-root #'dispatcher (fn [_] f)))))
